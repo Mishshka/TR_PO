@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="TR_PO/TR_PO.vcxproj" Id="6fc2e55b-fdc2-4be3-b774-1e65aa346f75" />
+</Solution>
