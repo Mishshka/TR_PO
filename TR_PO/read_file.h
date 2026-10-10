@@ -10,6 +10,7 @@
 #include <conio.h>
 #include <vector>
 #include "define_noun.h"
+#include "transcription.h"
 //--------------------------------
 
 //Используемые пространства имен:

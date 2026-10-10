@@ -141,11 +141,13 @@
   <ItemGroup>
     <ClCompile Include="define_noun.cpp" />
     <ClCompile Include="read_file.cpp" />
+    <ClCompile Include="transcription.cpp" />
     <ClCompile Include="user_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="define_noun.h" />
     <ClInclude Include="read_file.h" />
+    <ClInclude Include="transcription.h" />
     <ClInclude Include="user_interface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
