@@ -62,7 +62,7 @@ bool is_sent_end(char c)
 
 //функция начала работы
 //получает имя выбранного файла
-string read_file(string file_name)
+void read_file(string file_name)
 {
 
 	//установка кодировки
@@ -75,7 +75,7 @@ string read_file(string file_name)
 	{
 		cout << file_err_mes;
 		int ch = _getch();
-		return "error";
+		return;
 	}
 
 	//переменная сформированного слова
@@ -154,17 +154,11 @@ string read_file(string file_name)
 	//получаем транскрипции
 	vector<string> transcriptions = get_transcript(noun_sentence);
 	
-	//получаем имя выходного файла
-	//string f_out = next_stage(noun_sentence, transcriptions, file_name);
+	//формируем выходной файл
+	//next_stage(noun_sentence, transcriptions, file_name);
 
 	//--------------------------------------------------------
-	string f_out = "output.txt";
 	for (int i = 0; i < noun_sentence.size(); i++)
 		cout << noun_sentence[i].first << " " << noun_sentence[i].second <<" " <<transcriptions[i]<< endl;
-
-	//временное решение!!!
-	int ch = _getch();
 	//------------------------------------------------------
-
-	return f_out;
 }

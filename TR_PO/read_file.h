@@ -28,7 +28,7 @@ const string file_err_mes = "\nНе удалось открыть выбранный файл.\n\
 //Используемые функции:
 
 //функция для начала работы
-string read_file(string file_name);
+void read_file(string file_name);
 
 //функция проверки на то является ли символ разделителем
 bool is_word_separator(char c);
