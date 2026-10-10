@@ -140,12 +140,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="define_noun.cpp" />
+    <ClCompile Include="out_work.cpp" />
     <ClCompile Include="read_file.cpp" />
     <ClCompile Include="transcription.cpp" />
     <ClCompile Include="user_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="define_noun.h" />
+    <ClInclude Include="out_work.h" />
     <ClInclude Include="read_file.h" />
     <ClInclude Include="transcription.h" />
     <ClInclude Include="user_interface.h" />

@@ -155,10 +155,6 @@ void read_file(string file_name)
 	vector<string> transcriptions = get_transcript(noun_sentence);
 	
 	//формируем выходной файл
-	//next_stage(noun_sentence, transcriptions, file_name);
+	find_rithms(noun_sentence, transcriptions, file_name);
 
-	//--------------------------------------------------------
-	for (int i = 0; i < noun_sentence.size(); i++)
-		cout << noun_sentence[i].first << " " << noun_sentence[i].second <<" " <<transcriptions[i]<< endl;
-	//------------------------------------------------------
 }

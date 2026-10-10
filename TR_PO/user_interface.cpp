@@ -132,25 +132,11 @@ int main()
 				//Передача управления модулю чтения файла
 				//string f_out;
 				read_file(found_files[selected_file]);
-				//if (f_out != "error")
-					//after_work_action = 0;
+				cout <<'\n' << after_wrote_mes << endl;
+				ch = _getch();
 
-				//если не была получена ошибка, то говорим о созданном файле
-				//if (after_work_action == 0)
-				//{
-					//Получение имени выходного файла
-					//string out_file_name = f_out;
-
-					//После обработки сообщаем о том, что всё готово и нужно выбрать дальнейшее действие
-					//system("cls");
-					//cout << wrote_mes << out_file_name << endl;
-					cout << after_wrote_mes << endl;
-
-					ch = _getch();
-
-					//Даем пользователю выбрать дальнешие действия: новый файл или завершить
-					after_work_action = choose_menu(actions_mes, after_work_action);
-				//}
+				//Даем пользователю выбрать дальнешие действия: новый файл или завершить
+				after_work_action = choose_menu(actions_mes, after_work_action);
 			}
 		}
 	}
