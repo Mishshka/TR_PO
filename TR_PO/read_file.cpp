@@ -149,8 +149,12 @@ void read_file(string file_name)
 	
 	//выходной вектор из пар слово - номер предложения 
 	vector <pair<string, int>> noun_sentence = define_noun(in);
-
+	
+	
+	//получаем транскрипции
+	vector<string> transcriptions = get_transcript(noun_sentence);
 	//формируем выходной файл
-	find_rithms(noun_sentence, file_name);
+	find_rithms(noun_sentence, transcriptions, file_name);
+	//find_rithms(noun_sentence, file_name);
 
 }

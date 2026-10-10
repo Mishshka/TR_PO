@@ -25,11 +25,14 @@ struct Ending   //информация о концовке слова
     Ending* next_ending;    //указатель на следующую концовка
 };
 
-string get_ending(const string& noun);          //получение концовки слова
+string get_ending(const string& transcription);
+//string get_ending(const string& noun);          //получение концовки слова
 
-void put_in_struct(pair<string, int> ex_of_noun, Ending*& first_ending, bool& find_flag);        //помещение существительного в структуру
+void put_in_struct(pair<string, int> ex_of_noun, const string& transcription, Ending*& first_ending, bool& find_flag);
+//void put_in_struct(pair<string, int> ex_of_noun, Ending*& first_ending, bool& find_flag);        //помещение существительного в структуру
 
-void sort_nouns(const vector<pair<string, int>>& nouns, Ending*& first_ending, bool& find_flag);
+void sort_nouns(const vector<pair<string, int>>& nouns, const vector<string>& transcriptions, Ending*& first_ending, bool& find_flag);
+//void sort_nouns(const vector<pair<string, int>>& nouns, Ending*& first_ending, bool& find_flag);
 
 void delete_noun(Noun* noun);                //очистка списка слов
 
@@ -46,6 +49,7 @@ int count_rithms(Ending* first_ending);
 
 void write_to_file(string inp_name, Ending* first_ending);       //формирование выходного файла
 
-void find_rithms(vector<pair<string, int>> nouns, string inp_name);
+void find_rithms(vector<pair<string, int>>& nouns, vector<string>& transcriptions, string& inp_name);
+//void find_rithms(vector<pair<string, int>> nouns, string inp_name);
 
 

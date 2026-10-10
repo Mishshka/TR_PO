@@ -1,9 +1,10 @@
 ﻿#include "out_work.h"
 
-string get_ending(const string& noun)          //получение концовки слова
+string get_ending(const string& transcription)
+//string get_ending(const string& noun)          //получение концовки слова
 {
     //получаем транскрипции
-    string transcription = get_transcript(noun);
+    //string transcription = get_transcript(noun);
 
     size_t stress_pos = transcription.find("\xCB\x88");
     if (stress_pos == string::npos) return transcription;
@@ -12,12 +13,13 @@ string get_ending(const string& noun)          //получение концов
 }
 
 
-
-void put_in_struct(pair<string, int> ex_of_noun, Ending*& first_ending, bool& find_flag)        //помещение существительного в структуру
+void put_in_struct(pair<string, int> ex_of_noun, const string& transcription, Ending*& first_ending, bool& find_flag)
+//void put_in_struct(pair<string, int> ex_of_noun, Ending*& first_ending, bool& find_flag)        //помещение существительного в структуру
 {
     string noun = ex_of_noun.first;
     int prop_number = ex_of_noun.second;
-    string ending = get_ending(noun);          //получение концовки
+    string ending = get_ending(transcription);
+    //string ending = get_ending(noun);          //получение концовки
 
     Ending* curr_ending = first_ending;                 //выбор текущей концовки
     Ending* prev_ending = nullptr;                      //выбор предыдущей концовки
@@ -91,12 +93,13 @@ void put_in_struct(pair<string, int> ex_of_noun, Ending*& first_ending, bool& fi
     curr_noun->next_noun = nullptr;
 }
 
-
-void sort_nouns(const vector<pair<string, int>>& nouns, Ending*& first_ending, bool& find_flag)
+void sort_nouns(const vector<pair<string, int>>& nouns, const vector<string>& transcriptions, Ending*& first_ending, bool& find_flag)
+//void sort_nouns(const vector<pair<string, int>>& nouns, Ending*& first_ending, bool& find_flag)
 {
     for (int i = 0; i < nouns.size(); i++)
     {
-        put_in_struct(nouns[i], first_ending, find_flag);
+        put_in_struct(nouns[i], transcriptions[i], first_ending, find_flag);
+        //put_in_struct(nouns[i], first_ending, find_flag);
     }
 }
 
@@ -202,13 +205,14 @@ void write_to_file(string inp_name, Ending* first_ending)       //формиро
     return;
 }
 
-
-void find_rithms(vector<pair<string, int>> nouns, string inp_name)
+void find_rithms(vector<pair<string, int>>& nouns, vector<string>& transcriptions, string& inp_name)
+//void find_rithms(vector<pair<string, int>> nouns, string inp_name)
 {
     Ending* first_ending = nullptr;     //указатель на начало структуры
     bool find_flag = false;             //флаг нахождения рифм
 
-    sort_nouns(nouns, first_ending, find_flag);
+    sort_nouns(nouns, transcriptions, first_ending, find_flag);
+    //sort_nouns(nouns, first_ending, find_flag);
 
     if (first_ending == nullptr)                                //если структура пуста (нет существительных)
     {
