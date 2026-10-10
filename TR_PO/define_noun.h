@@ -10,6 +10,7 @@
 #include <conio.h>
 #include <fstream>
 #include <vector>
+#include <sstream>
 //--------------------------------
 
 //Используемые пространства имен:
@@ -21,4 +22,4 @@ using namespace std;
 //Используемые функции:
 
 //функция для начала работы и определения части речи 
-vector <pair<string, int>> define_noun(string sentence, int num_sentence);
+vector <pair<string, int>> define_noun(const vector<pair<string, int>>& sentences);

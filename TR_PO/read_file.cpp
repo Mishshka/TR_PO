@@ -87,8 +87,7 @@ void read_file(string file_name)
 	//считываемый символ
 	char c;
 
-	//выходной вектор из пар слово - номер предложения 
-	vector <pair<string, int>> noun_sentence;
+	vector <pair<string, int>> in;
 
 	while (file.get(c))
 	{
@@ -114,9 +113,7 @@ void read_file(string file_name)
 					file.get();
 				if (!sentence.empty())
 				{
-					//получение существительных из предложения
-					vector <pair<string, int>> in = define_noun(sentence, num_sentence);
-					noun_sentence.insert(noun_sentence.end(), in.begin(), in.end());
+					in.push_back(make_pair(sentence, num_sentence));
 					sentence.clear();
 				}
 				num_sentence++;
@@ -144,13 +141,15 @@ void read_file(string file_name)
 	if (!sentence.empty())
 	{
 		//получение существительных из предложения
-		vector <pair<string, int>> in = define_noun(sentence, num_sentence);
-		noun_sentence.insert(noun_sentence.end(), in.begin(), in.end());
+		in.push_back(make_pair(sentence, num_sentence));
 		sentence.clear();
 	}
 
 	file.close();
 	
+	//выходной вектор из пар слово - номер предложения 
+	vector <pair<string, int>> noun_sentence = define_noun(in);
+
 	//формируем выходной файл
 	find_rithms(noun_sentence, file_name);
 
