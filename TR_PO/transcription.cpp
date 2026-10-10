@@ -40,7 +40,7 @@ string cp1251_to_utf8(const string& str1251)
 
 // функция получения транскрипции (!!!!!в UTF-8)
 //возвращает вектор транскрипций
-vector <string> get_transcript(vector<pair<string, int>> words)
+string get_transcript(string word)
 {
 	//работаем по следующему принципу:
 	//	1. Проверяем, что вектор не пустой
@@ -52,16 +52,16 @@ vector <string> get_transcript(vector<pair<string, int>> words)
 	// не забываем удалить временные файлы
 	//
 
-	vector <string> transcriptions;
+	string transcription;
 
-	if (words.empty()) return transcriptions;
+	if (word.empty()) return transcription;
 
 	const string input = "tmp_words.txt";
 	const string output = "tmp_transcript";
 
 	ofstream outFile(input);
-	for (const auto& word : words)
-		outFile << cp1251_to_utf8(word.first) << endl;
+	
+	outFile << cp1251_to_utf8(word) << endl;
 	outFile.close();
 
 	string exePath = "eSpeak NG\\espeak-ng.exe";
@@ -70,14 +70,11 @@ vector <string> get_transcript(vector<pair<string, int>> words)
 
 	ifstream inFile(output);
 	string token;
-	while (inFile >> token)
-	{
-		transcriptions.push_back(token);
-	}
+	inFile >> transcription;
 	inFile.close();
 
 	remove(input.c_str());
 	remove(output.c_str());
 
-	return transcriptions;
+	return transcription;
 }

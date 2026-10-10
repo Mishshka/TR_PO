@@ -24,4 +24,4 @@ using namespace std;
 string cp1251_to_utf8(const string& str1251);
 
 //функция получения транскрипции
-vector <string> get_transcript(vector<pair<string, int>> words);
+string get_transcript(string word);

@@ -10,7 +10,6 @@
 #include <conio.h>
 #include <vector>
 #include "define_noun.h"
-#include "transcription.h"
 #include "out_work.h"
 //--------------------------------
 

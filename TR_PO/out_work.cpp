@@ -1,8 +1,11 @@
-#include "out_work.h"
+п»ї#include "out_work.h"
 
-string get_ending(const string& transcription)          //получение концовки слова
+string get_ending(const string& noun)          //РїРѕР»СѓС‡РµРЅРёРµ РєРѕРЅС†РѕРІРєРё СЃР»РѕРІР°
 {
-    size_t stress_pos = transcription.find('\'');
+    //РїРѕР»СѓС‡Р°РµРј С‚СЂР°РЅСЃРєСЂРёРїС†РёРё
+    string transcription = get_transcript(noun);
+
+    size_t stress_pos = transcription.find("\xCB\x88");
     if (stress_pos == string::npos) return transcription;
     string ending = transcription.substr(stress_pos);
     return ending;
@@ -10,20 +13,20 @@ string get_ending(const string& transcription)          //получение концовки сло
 
 
 
-void put_in_struct(pair<string, int> ex_of_noun, const string& transcription, Ending*& first_ending, bool& find_flag)        //помещение существительного в структуру
+void put_in_struct(pair<string, int> ex_of_noun, Ending*& first_ending, bool& find_flag)        //РїРѕРјРµС‰РµРЅРёРµ СЃСѓС‰РµСЃС‚РІРёС‚РµР»СЊРЅРѕРіРѕ РІ СЃС‚СЂСѓРєС‚СѓСЂСѓ
 {
     string noun = ex_of_noun.first;
     int prop_number = ex_of_noun.second;
-    string ending = get_ending(transcription);          //получение концовки
+    string ending = get_ending(noun);          //РїРѕР»СѓС‡РµРЅРёРµ РєРѕРЅС†РѕРІРєРё
 
-    Ending* curr_ending = first_ending;                 //выбор текущей концовки
-    Ending* prev_ending = nullptr;                      //выбор предыдущей концовки
+    Ending* curr_ending = first_ending;                 //РІС‹Р±РѕСЂ С‚РµРєСѓС‰РµР№ РєРѕРЅС†РѕРІРєРё
+    Ending* prev_ending = nullptr;                      //РІС‹Р±РѕСЂ РїСЂРµРґС‹РґСѓС‰РµР№ РєРѕРЅС†РѕРІРєРё
 
-    if (first_ending != nullptr)                          //поиск места слова в структуре, если структура не пуста
+    if (first_ending != nullptr)                          //РїРѕРёСЃРє РјРµСЃС‚Р° СЃР»РѕРІР° РІ СЃС‚СЂСѓРєС‚СѓСЂРµ, РµСЃР»Рё СЃС‚СЂСѓРєС‚СѓСЂР° РЅРµ РїСѓСЃС‚Р°
     {
-        while (curr_ending != nullptr)                  //цикл прохода по списку встреченных ранее концовок
+        while (curr_ending != nullptr)                  //С†РёРєР» РїСЂРѕС…РѕРґР° РїРѕ СЃРїРёСЃРєСѓ РІСЃС‚СЂРµС‡РµРЅРЅС‹С… СЂР°РЅРµРµ РєРѕРЅС†РѕРІРѕРє
         {
-            if (ending != curr_ending->ending)          //концовка рассматриваемого слова не совпала с текущей->сдвиг текущей и предыдущей концовок
+            if (ending != curr_ending->ending)          //РєРѕРЅС†РѕРІРєР° СЂР°СЃСЃРјР°С‚СЂРёРІР°РµРјРѕРіРѕ СЃР»РѕРІР° РЅРµ СЃРѕРІРїР°Р»Р° СЃ С‚РµРєСѓС‰РµР№->СЃРґРІРёРі С‚РµРєСѓС‰РµР№ Рё РїСЂРµРґС‹РґСѓС‰РµР№ РєРѕРЅС†РѕРІРѕРє
             {
                 prev_ending = curr_ending;
                 curr_ending = prev_ending->next_ending;
@@ -31,52 +34,52 @@ void put_in_struct(pair<string, int> ex_of_noun, const string& transcription, En
             else
             {
                 find_flag = true;
-                break;                                 //выход из цикла при нахождении в списке кронцовки слова
+                break;                                 //РІС‹С…РѕРґ РёР· С†РёРєР»Р° РїСЂРё РЅР°С…РѕР¶РґРµРЅРёРё РІ СЃРїРёСЃРєРµ РєСЂРѕРЅС†РѕРІРєРё СЃР»РѕРІР°
             }
         }
-        if (curr_ending == nullptr)                     //концовка слова не встретилась в списке
+        if (curr_ending == nullptr)                     //РєРѕРЅС†РѕРІРєР° СЃР»РѕРІР° РЅРµ РІСЃС‚СЂРµС‚РёР»Р°СЃСЊ РІ СЃРїРёСЃРєРµ
         {
-            curr_ending = new Ending;                   //создание нового элемента списка
+            curr_ending = new Ending;                   //СЃРѕР·РґР°РЅРёРµ РЅРѕРІРѕРіРѕ СЌР»РµРјРµРЅС‚Р° СЃРїРёСЃРєР°
             curr_ending->ending = ending;
             curr_ending->next_ending = nullptr;
             curr_ending->first_in_column = nullptr;
-            prev_ending->next_ending = curr_ending;     //присоединение нового элемента к списку
+            prev_ending->next_ending = curr_ending;     //РїСЂРёСЃРѕРµРґРёРЅРµРЅРёРµ РЅРѕРІРѕРіРѕ СЌР»РµРјРµРЅС‚Р° Рє СЃРїРёСЃРєСѓ
         }
     }
-    else                                                //если структура пуста
+    else                                                //РµСЃР»Рё СЃС‚СЂСѓРєС‚СѓСЂР° РїСѓСЃС‚Р°
     {
         curr_ending = new Ending;
         curr_ending->ending = ending;
         curr_ending->next_ending = nullptr;
         curr_ending->first_in_column = nullptr;
-        first_ending = curr_ending;                     //установка указателя первого элемента
+        first_ending = curr_ending;                     //СѓСЃС‚Р°РЅРѕРІРєР° СѓРєР°Р·Р°С‚РµР»СЏ РїРµСЂРІРѕРіРѕ СЌР»РµРјРµРЅС‚Р°
     }
     Noun* curr_noun = nullptr;
     Noun* prev_noun = nullptr;
-    if (curr_ending->first_in_column == nullptr)        //если до этого не встречались слова с такой концовкой
+    if (curr_ending->first_in_column == nullptr)        //РµСЃР»Рё РґРѕ СЌС‚РѕРіРѕ РЅРµ РІСЃС‚СЂРµС‡Р°Р»РёСЃСЊ СЃР»РѕРІР° СЃ С‚Р°РєРѕР№ РєРѕРЅС†РѕРІРєРѕР№
     {
         curr_noun = new Noun;
-        curr_ending->first_in_column = curr_noun;       //установка указателя начала списка слов с такой концовкой на новое слово
+        curr_ending->first_in_column = curr_noun;       //СѓСЃС‚Р°РЅРѕРІРєР° СѓРєР°Р·Р°С‚РµР»СЏ РЅР°С‡Р°Р»Р° СЃРїРёСЃРєР° СЃР»РѕРІ СЃ С‚Р°РєРѕР№ РєРѕРЅС†РѕРІРєРѕР№ РЅР° РЅРѕРІРѕРµ СЃР»РѕРІРѕ
     }
-    else                                                //если до этого встречались слова с такой концовкой
+    else                                                //РµСЃР»Рё РґРѕ СЌС‚РѕРіРѕ РІСЃС‚СЂРµС‡Р°Р»РёСЃСЊ СЃР»РѕРІР° СЃ С‚Р°РєРѕР№ РєРѕРЅС†РѕРІРєРѕР№
     {
         curr_noun = curr_ending->first_in_column;
 
-        while (curr_noun != nullptr)                     //проход по списку слов с такой же концовкой
+        while (curr_noun != nullptr)                     //РїСЂРѕС…РѕРґ РїРѕ СЃРїРёСЃРєСѓ СЃР»РѕРІ СЃ С‚Р°РєРѕР№ Р¶Рµ РєРѕРЅС†РѕРІРєРѕР№
         {
             if (curr_noun->noun != noun)
             {
-                prev_noun = curr_noun;                    //продвижение по списку, если слово не совпало
+                prev_noun = curr_noun;                    //РїСЂРѕРґРІРёР¶РµРЅРёРµ РїРѕ СЃРїРёСЃРєСѓ, РµСЃР»Рё СЃР»РѕРІРѕ РЅРµ СЃРѕРІРїР°Р»Рѕ
                 curr_noun = prev_noun->next_noun;
             }
-            else break;                                    //выход из цикла, если слово совпало
+            else break;                                    //РІС‹С…РѕРґ РёР· С†РёРєР»Р°, РµСЃР»Рё СЃР»РѕРІРѕ СЃРѕРІРїР°Р»Рѕ
         }
-        if (curr_noun != nullptr)                           //если слово уже встречалось
+        if (curr_noun != nullptr)                           //РµСЃР»Рё СЃР»РѕРІРѕ СѓР¶Рµ РІСЃС‚СЂРµС‡Р°Р»РѕСЃСЊ
         {
-            curr_noun->repetitions++;                       //увеличиваем счётчик повторений
+            curr_noun->repetitions++;                       //СѓРІРµР»РёС‡РёРІР°РµРј СЃС‡С‘С‚С‡РёРє РїРѕРІС‚РѕСЂРµРЅРёР№
             return;
         }
-        curr_noun = new Noun;                           //создание нового элемента списка слов с такой концовкой
+        curr_noun = new Noun;                           //СЃРѕР·РґР°РЅРёРµ РЅРѕРІРѕРіРѕ СЌР»РµРјРµРЅС‚Р° СЃРїРёСЃРєР° СЃР»РѕРІ СЃ С‚Р°РєРѕР№ РєРѕРЅС†РѕРІРєРѕР№
         if (prev_noun != nullptr)
         {
             prev_noun->next_noun = curr_noun;
@@ -89,43 +92,43 @@ void put_in_struct(pair<string, int> ex_of_noun, const string& transcription, En
 }
 
 
-void sort_nouns(const vector<pair<string, int>>& nouns, const vector<string>& transcriptions, Ending*& first_ending, bool& find_flag)
+void sort_nouns(const vector<pair<string, int>>& nouns, Ending*& first_ending, bool& find_flag)
 {
     for (int i = 0; i < nouns.size(); i++)
     {
-        put_in_struct(nouns[i], transcriptions[i], first_ending, find_flag);
+        put_in_struct(nouns[i], first_ending, find_flag);
     }
 }
 
-void delete_noun(Noun* noun)                //очистка списка слов
+void delete_noun(Noun* noun)                //РѕС‡РёСЃС‚РєР° СЃРїРёСЃРєР° СЃР»РѕРІ
 {
     if (noun != nullptr)
     {
-        if (noun->next_noun != nullptr)     //пока не дошли до конца списка
-            delete_noun(noun->next_noun);   //рекурсивный вызов
-        delete noun;                        //удаление элемента
+        if (noun->next_noun != nullptr)     //РїРѕРєР° РЅРµ РґРѕС€Р»Рё РґРѕ РєРѕРЅС†Р° СЃРїРёСЃРєР°
+            delete_noun(noun->next_noun);   //СЂРµРєСѓСЂСЃРёРІРЅС‹Р№ РІС‹Р·РѕРІ
+        delete noun;                        //СѓРґР°Р»РµРЅРёРµ СЌР»РµРјРµРЅС‚Р°
     }
 }
 
 
-void delete_ending(Ending* ending)          //очистка списка концовок
+void delete_ending(Ending* ending)          //РѕС‡РёСЃС‚РєР° СЃРїРёСЃРєР° РєРѕРЅС†РѕРІРѕРє
 {
     if (ending != nullptr)
     {
-        if (ending->next_ending != nullptr)     //пока не дошли до конца списка
-            delete_ending(ending->next_ending); //рекурсивный вызов
-        delete_noun(ending->first_in_column);   //очистка списка существительных с такой концовкой
-        delete ending;                          //удаление элемента
+        if (ending->next_ending != nullptr)     //РїРѕРєР° РЅРµ РґРѕС€Р»Рё РґРѕ РєРѕРЅС†Р° СЃРїРёСЃРєР°
+            delete_ending(ending->next_ending); //СЂРµРєСѓСЂСЃРёРІРЅС‹Р№ РІС‹Р·РѕРІ
+        delete_noun(ending->first_in_column);   //РѕС‡РёСЃС‚РєР° СЃРїРёСЃРєР° СЃСѓС‰РµСЃС‚РІРёС‚РµР»СЊРЅС‹С… СЃ С‚Р°РєРѕР№ РєРѕРЅС†РѕРІРєРѕР№
+        delete ending;                          //СѓРґР°Р»РµРЅРёРµ СЌР»РµРјРµРЅС‚Р°
     }
 }
 
 
-void clean_struct(Ending*& first_ending)         //очистка структуры
+void clean_struct(Ending*& first_ending)         //РѕС‡РёСЃС‚РєР° СЃС‚СЂСѓРєС‚СѓСЂС‹
 {
-    if (first_ending != nullptr)                //если структура не пустая
+    if (first_ending != nullptr)                //РµСЃР»Рё СЃС‚СЂСѓРєС‚СѓСЂР° РЅРµ РїСѓСЃС‚Р°СЏ
     {
-        delete_ending(first_ending);            //очистка списка концовок
-        first_ending = nullptr;                 //сброс указателя на начало структуры
+        delete_ending(first_ending);            //РѕС‡РёСЃС‚РєР° СЃРїРёСЃРєР° РєРѕРЅС†РѕРІРѕРє
+        first_ending = nullptr;                 //СЃР±СЂРѕСЃ СѓРєР°Р·Р°С‚РµР»СЏ РЅР° РЅР°С‡Р°Р»Рѕ СЃС‚СЂСѓРєС‚СѓСЂС‹
     }
 }
 
@@ -165,30 +168,29 @@ int count_rithms(Ending* first_ending)
     return number_of_rithms;
 }
 
-void write_to_file(string inp_name, Ending* first_ending)       //формирование выходного файла
+void write_to_file(string inp_name, Ending* first_ending)       //С„РѕСЂРјРёСЂРѕРІР°РЅРёРµ РІС‹С…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р°
 {
 
-    string outp_name = "outp" + inp_name;                       //формирование названия выходного файла
-    ofstream out_file(outp_name);                               //создание выходного файла
+    string outp_name = "outp_" + inp_name;                       //С„РѕСЂРјРёСЂРѕРІР°РЅРёРµ РЅР°Р·РІР°РЅРёСЏ РІС‹С…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р°
+    ofstream out_file(outp_name);                               //СЃРѕР·РґР°РЅРёРµ РІС‹С…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р°
     if (!out_file.is_open()) {
-        cout << "ОШИБКА: Не удалось создать файл " << outp_name << "\n";
-        cout << "Проверьте права доступа или попробуйте запустить IDE от имени администратора.\n";
+        cout << "РћРЁРР‘РљРђ: РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ С„Р°Р№Р» " << outp_name << "\n";
         return;
     }
 
-    out_file << "\n\t" << "Пар рифмующихся существительных " << count_rithms(first_ending);
+    out_file << "\n\t" << "РџР°СЂ СЂРёС„РјСѓСЋС‰РёС…СЃСЏ СЃСѓС‰РµСЃС‚РІРёС‚РµР»СЊРЅС‹С… " << count_rithms(first_ending);
 
-    Ending* curr_ending = first_ending;                         //установка текущей концовки
-    while (curr_ending != nullptr)                              //цикл по списку концовок
+    Ending* curr_ending = first_ending;                         //СѓСЃС‚Р°РЅРѕРІРєР° С‚РµРєСѓС‰РµР№ РєРѕРЅС†РѕРІРєРё
+    while (curr_ending != nullptr)                              //С†РёРєР» РїРѕ СЃРїРёСЃРєСѓ РєРѕРЅС†РѕРІРѕРє
     {
         Noun* curr_noun = curr_ending->first_in_column;
-        if (curr_noun->next_noun != nullptr)                      //проверка, что в структуре больше одного слова с такой концовкой
-            while (curr_noun != nullptr)                            //цикл по списку существительных с такой концовкой
+        if (curr_noun->next_noun != nullptr)                      //РїСЂРѕРІРµСЂРєР°, С‡С‚Рѕ РІ СЃС‚СЂСѓРєС‚СѓСЂРµ Р±РѕР»СЊС€Рµ РѕРґРЅРѕРіРѕ СЃР»РѕРІР° СЃ С‚Р°РєРѕР№ РєРѕРЅС†РѕРІРєРѕР№
+            while (curr_noun != nullptr)                            //С†РёРєР» РїРѕ СЃРїРёСЃРєСѓ СЃСѓС‰РµСЃС‚РІРёС‚РµР»СЊРЅС‹С… СЃ С‚Р°РєРѕР№ РєРѕРЅС†РѕРІРєРѕР№
             {
                 Noun* next_noun = curr_noun->next_noun;
-                while (next_noun != nullptr)                          //запись текущего слова в файл в паре с каждым из идущих за ним в списке
+                while (next_noun != nullptr)                          //Р·Р°РїРёСЃСЊ С‚РµРєСѓС‰РµРіРѕ СЃР»РѕРІР° РІ С„Р°Р№Р» РІ РїР°СЂРµ СЃ РєР°Р¶РґС‹Рј РёР· РёРґСѓС‰РёС… Р·Р° РЅРёРј РІ СЃРїРёСЃРєРµ
                 {
-                    out_file << "\n\t" << curr_noun->noun << ' ' << curr_noun->repetitions << " повторений" << " (с предложения " << curr_noun->prop_number << ") - " << next_noun->noun << " повторений" << " (с предложения " << next_noun->prop_number << ")";
+                    out_file << "\n\t" << curr_noun->noun << ' '  << " РїРѕРІС‚РѕСЂРµРЅРёР№ - "<< curr_noun->repetitions << " (СЃ РїСЂРµРґР»РѕР¶РµРЅРёСЏ " << curr_noun->prop_number << ") - " << next_noun->noun << " РїРѕРІС‚РѕСЂРµРЅРёР№ - " << next_noun->repetitions<< " (СЃ РїСЂРµРґР»РѕР¶РµРЅРёСЏ " << next_noun->prop_number << ")";
                     next_noun = next_noun->next_noun;
                 }
                 curr_noun = curr_noun->next_noun;
@@ -196,27 +198,27 @@ void write_to_file(string inp_name, Ending* first_ending)       //формирование в
         curr_ending = curr_ending->next_ending;
     }
     out_file.close();
-    cout << "Данные сохранены в файл " << outp_name;
+    cout << "Р”Р°РЅРЅС‹Рµ СЃРѕС…СЂР°РЅРµРЅС‹ РІ С„Р°Р№Р» " << outp_name;
     return;
 }
 
 
-void find_rithms(vector<pair<string, int>> nouns, vector<string> transcriptions, string inp_name)
+void find_rithms(vector<pair<string, int>> nouns, string inp_name)
 {
-    Ending* first_ending = nullptr;     //указатель на начало структуры
-    bool find_flag = false;             //флаг нахождения рифм
+    Ending* first_ending = nullptr;     //СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РЅР°С‡Р°Р»Рѕ СЃС‚СЂСѓРєС‚СѓСЂС‹
+    bool find_flag = false;             //С„Р»Р°Рі РЅР°С…РѕР¶РґРµРЅРёСЏ СЂРёС„Рј
 
-    sort_nouns(nouns, transcriptions, first_ending, find_flag);
+    sort_nouns(nouns, first_ending, find_flag);
 
-    if (first_ending == nullptr)                                //если структура пуста (нет существительных)
+    if (first_ending == nullptr)                                //РµСЃР»Рё СЃС‚СЂСѓРєС‚СѓСЂР° РїСѓСЃС‚Р° (РЅРµС‚ СЃСѓС‰РµСЃС‚РІРёС‚РµР»СЊРЅС‹С…)
     {
-        cout << "Существительных не обнаружено";
+        cout << "РЎСѓС‰РµСЃС‚РІРёС‚РµР»СЊРЅС‹С… РЅРµ РѕР±РЅР°СЂСѓР¶РµРЅРѕ";
         return;
     }
-    if (!find_flag)                                             //если не найдено рифм
+    if (!find_flag)                                             //РµСЃР»Рё РЅРµ РЅР°Р№РґРµРЅРѕ СЂРёС„Рј
     {
-        cout << "Рифмующихся существительных не обнаружено";
-        clean_struct(first_ending);                             //очистка структуры
+        cout << "Р РёС„РјСѓСЋС‰РёС…СЃСЏ СЃСѓС‰РµСЃС‚РІРёС‚РµР»СЊРЅС‹С… РЅРµ РѕР±РЅР°СЂСѓР¶РµРЅРѕ";
+        clean_struct(first_ending);                             //РѕС‡РёСЃС‚РєР° СЃС‚СЂСѓРєС‚СѓСЂС‹
         return;
     }
     write_to_file(inp_name, first_ending);
