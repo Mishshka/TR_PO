@@ -65,7 +65,6 @@ vector <string> get_transcript(const vector<pair<string, int>> & words)
 	
 	for (const auto& word : words)
 		outFile << cp1251_to_utf8(word.first) << endl;
-
 	//outFile << cp1251_to_utf8(word) << endl;
 	
 	outFile.close();
@@ -89,4 +88,5 @@ vector <string> get_transcript(const vector<pair<string, int>> & words)
 	remove(output.c_str());
 
 	return transcriptions;
+	//return transcription;
 }

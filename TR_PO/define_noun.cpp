@@ -19,12 +19,17 @@
 //функция начала обработки
 //получает предложение и его номер
 vector <pair<string, int>> define_noun(const vector<pair<string, int>>& sentences)
+//vector <pair<string, int>> define_noun(string& sentence, int& num_sentence)
 {
 	//выходной вектор
+	//string noun;
 	vector<pair<string, int>> out;
 
 	//записываем полученное предложение в временный файл (для mystem)
 	ofstream f("tmp_in.txt");
+	/*f.write(sentence.c_str(), sentence.size());
+	f.put('\n');*/
+	
 	for (const auto& p : sentences) 
 	{
 		f.write(p.first.c_str(), p.first.size());
@@ -56,8 +61,15 @@ vector <pair<string, int>> define_noun(const vector<pair<string, int>>& sentence
 
 		//ищем поблочно (через поиск блоков фигурных скобок)
 		size_t pos = 0;
+		//while ((pos = output.find('{', pos)) != string::npos)
 		while ((pos = line_out.find('{', pos)) != string::npos)
 		{
+			/*size_t end_pos = output.find('}', pos);
+
+			if (end_pos == string::npos)
+				break;
+			string block = output.substr(pos + 1, end_pos - pos - 1);*/
+
 			size_t end_pos = line_out.find('}', pos);
 
 			if (end_pos == string::npos) break;
@@ -66,6 +78,12 @@ vector <pair<string, int>> define_noun(const vector<pair<string, int>>& sentence
 
 			if (block.find("=S,") != string::npos)
 			{
+				//size_t word_start = output.rfind('}', pos);
+				//word_start = (word_start == string::npos) ? 0 : word_start + 1;
+				//string noun = output.substr(word_start, pos - word_start);
+				////после передаем в выходной вектор
+				//out.push_back(make_pair(noun, num_sentence));
+
 				size_t word_start = line_out.rfind('}', pos);
 				word_start = (word_start == string::npos) ? 0 : word_start + 1;
 				string noun = line_out.substr(word_start, pos - word_start);

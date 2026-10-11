@@ -64,6 +64,7 @@ bool is_sent_end(char c)
 //получает имя выбранного файла
 void read_file(string file_name)
 {
+	auto start = std::chrono::system_clock::now();
 
 	//установка кодировки
 	SetConsoleCP(1251);
@@ -88,6 +89,7 @@ void read_file(string file_name)
 	char c;
 
 	vector <pair<string, int>> in;
+	//vector <pair<string, int>> noun_sentence;
 
 	while (file.get(c))
 	{
@@ -114,6 +116,9 @@ void read_file(string file_name)
 				if (!sentence.empty())
 				{
 					in.push_back(make_pair(sentence, num_sentence));
+					//vector <pair<string, int>> in = define_noun(sentence, num_sentence);
+					//noun_sentence.insert(noun_sentence.end(), in.begin(), in.end());
+					
 					sentence.clear();
 				}
 				num_sentence++;
@@ -142,19 +147,27 @@ void read_file(string file_name)
 	{
 		//получение существительных из предложения
 		in.push_back(make_pair(sentence, num_sentence));
+		//vector <pair<string, int>> in = define_noun(sentence, num_sentence);
+		//noun_sentence.insert(noun_sentence.end(), in.begin(), in.end());
+
 		sentence.clear();
 	}
 
 	file.close();
 	
+	
+
 	//выходной вектор из пар слово - номер предложения 
 	vector <pair<string, int>> noun_sentence = define_noun(in);
 	
-	
 	//получаем транскрипции
 	vector<string> transcriptions = get_transcript(noun_sentence);
+
 	//формируем выходной файл
 	find_rithms(noun_sentence, transcriptions, file_name);
 	//find_rithms(noun_sentence, file_name);
 
+	auto end = std::chrono::system_clock::now();
+	cout <<endl<< chrono::duration_cast<chrono::milliseconds>(end - start) << endl;
+	_getch();
 }

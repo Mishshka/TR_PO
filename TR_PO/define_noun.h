@@ -23,3 +23,4 @@ using namespace std;
 
 //функция для начала работы и определения части речи 
 vector <pair<string, int>> define_noun(const vector<pair<string, int>>& sentences);
+//vector <pair<string, int>> define_noun(string& sentence, int& num_sentence);

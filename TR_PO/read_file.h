@@ -11,6 +11,8 @@
 #include <vector>
 #include "define_noun.h"
 #include "out_work.h"
+
+#include <chrono>
 //--------------------------------
 
 //Используемые пространства имен:
