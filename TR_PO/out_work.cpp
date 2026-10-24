@@ -1,11 +1,9 @@
 ﻿#include "out_work.h"
 
-string get_ending(const string& transcription)
-//string get_ending(const string& noun)          //получение концовки слова
+string get_ending(const string& transcription)//получение концовки слова
+  
 {
-    //получаем транскрипции
-    //string transcription = get_transcript(noun);
-
+    
     size_t stress_pos = transcription.find("\xCB\x88");
     if (stress_pos == string::npos) return transcription;
     string ending = transcription.substr(stress_pos);
@@ -13,13 +11,12 @@ string get_ending(const string& transcription)
 }
 
 
-void put_in_struct(pair<string, int> ex_of_noun, const string& transcription, Ending*& first_ending, bool& find_flag)
-//void put_in_struct(pair<string, int> ex_of_noun, Ending*& first_ending, bool& find_flag)        //помещение существительного в структуру
+void put_in_struct(pair<string, int> ex_of_noun, const string& transcription, Ending*& first_ending) //помещение существительного в структуру
 {
     string noun = ex_of_noun.first;
     int prop_number = ex_of_noun.second;
-    string ending = get_ending(transcription);
-    //string ending = get_ending(noun);          //получение концовки
+    string ending = get_ending(transcription); //получение концовки
+       
 
     Ending* curr_ending = first_ending;                 //выбор текущей концовки
     Ending* prev_ending = nullptr;                      //выбор предыдущей концовки
@@ -35,7 +32,6 @@ void put_in_struct(pair<string, int> ex_of_noun, const string& transcription, En
             }
             else
             {
-                find_flag = true;
                 break;                                 //выход из цикла при нахождении в списке кронцовки слова
             }
         }
@@ -79,6 +75,13 @@ void put_in_struct(pair<string, int> ex_of_noun, const string& transcription, En
         if (curr_noun != nullptr)                           //если слово уже встречалось
         {
             curr_noun->repetitions++;                       //увеличиваем счётчик повторений
+            Prop* curr_prop = curr_noun->prop_list;
+            while (curr_prop->next_prop != nullptr)
+                curr_prop = curr_prop->next_prop;
+            Prop* add_prop = new Prop;
+            add_prop->number = prop_number;
+            add_prop->next_prop = nullptr;
+            curr_prop->next_prop = add_prop;
             return;
         }
         curr_noun = new Noun;                           //создание нового элемента списка слов с такой концовкой
@@ -87,28 +90,44 @@ void put_in_struct(pair<string, int> ex_of_noun, const string& transcription, En
             prev_noun->next_noun = curr_noun;
         }
     }
-    curr_noun->prop_number = prop_number;
+    curr_ending->counter++;
+    curr_noun->prop_list = new Prop;
+    curr_noun->prop_list->number=prop_number;
+    curr_noun->prop_list->next_prop = nullptr;
     curr_noun->repetitions = 1;
     curr_noun->noun = noun;
     curr_noun->next_noun = nullptr;
 }
 
-void sort_nouns(const vector<pair<string, int>>& nouns, const vector<string>& transcriptions, Ending*& first_ending, bool& find_flag)
+void sort_nouns(const vector<pair<string, int>>& nouns, const vector<string>& transcriptions, Ending*& first_ending)
 //void sort_nouns(const vector<pair<string, int>>& nouns, Ending*& first_ending, bool& find_flag)
 {
     for (int i = 0; i < nouns.size(); i++)
     {
-        put_in_struct(nouns[i], transcriptions[i], first_ending, find_flag);
+        put_in_struct(nouns[i], transcriptions[i], first_ending);
         //put_in_struct(nouns[i], first_ending, find_flag);
     }
 }
+
+void clear_prop_list(Prop* prop)
+{
+    if (prop != nullptr)
+    {
+        clear_prop_list(prop->next_prop);
+        delete prop;
+    }
+}
+
 
 void delete_noun(Noun* noun)                //очистка списка слов
 {
     if (noun != nullptr)
     {
         if (noun->next_noun != nullptr)     //пока не дошли до конца списка
+        {
             delete_noun(noun->next_noun);   //рекурсивный вызов
+        } 
+        clear_prop_list(noun->prop_list);
         delete noun;                        //удаление элемента
     }
 }
@@ -157,18 +176,32 @@ int count_rithms(Ending* first_ending)
     Ending* curr_ending = first_ending;
     while (curr_ending != nullptr)
     {
-        int number_of_nouns = 0;
-        Noun* curr_noun = curr_ending->first_in_column;
-        while (curr_noun != nullptr)
-        {
-            number_of_nouns++;
-            curr_noun = curr_noun->next_noun;
-        }
-        if (number_of_nouns >= 2)
-            number_of_rithms += combins(number_of_nouns, 2);
+        number_of_rithms += combins(curr_ending->counter, 2);
         curr_ending = curr_ending->next_ending;
     }
     return number_of_rithms;
+}
+
+void print_word(const Noun* noun, ofstream& f, bool first_in_pair)
+{
+    if (first_in_pair)
+        f << '\n';
+    f << "\t" << noun->noun << " повторений - " << noun->repetitions;
+    if (noun->repetitions == 1)
+        f << " (в предложении " << noun->prop_list->number << ")\t";
+    else
+    {
+        f << " (в предложениях ";
+        Prop* curr_prop = noun->prop_list;
+        while (curr_prop != nullptr)
+        {
+            f << curr_prop->number;
+            curr_prop = curr_prop->next_prop;
+            if (curr_prop != nullptr)
+                f << ", ";
+        }
+        f << ')';
+    }
 }
 
 void write_to_file(string inp_name, Ending* first_ending)       //формирование выходного файла
@@ -193,7 +226,8 @@ void write_to_file(string inp_name, Ending* first_ending)       //формиро
                 Noun* next_noun = curr_noun->next_noun;
                 while (next_noun != nullptr)                          //запись текущего слова в файл в паре с каждым из идущих за ним в списке
                 {
-                    out_file << "\n\t" << curr_noun->noun << ' '  << " повторений - "<< curr_noun->repetitions << " (с предложения " << curr_noun->prop_number << ") - " << next_noun->noun << " повторений - " << next_noun->repetitions<< " (с предложения " << next_noun->prop_number << ")";
+                    print_word(curr_noun, out_file, true);
+                    print_word(next_noun, out_file, false);
                     next_noun = next_noun->next_noun;
                 }
                 curr_noun = curr_noun->next_noun;
@@ -209,17 +243,16 @@ void find_rithms(vector<pair<string, int>>& nouns, vector<string>& transcription
 //void find_rithms(vector<pair<string, int>> nouns, string inp_name)
 {
     Ending* first_ending = nullptr;     //указатель на начало структуры
-    bool find_flag = false;             //флаг нахождения рифм
 
-    sort_nouns(nouns, transcriptions, first_ending, find_flag);
+    sort_nouns(nouns, transcriptions, first_ending);
     //sort_nouns(nouns, first_ending, find_flag);
 
     if (first_ending == nullptr)                                //если структура пуста (нет существительных)
     {
         cout << "Существительных не обнаружено";
         return;
-    }
-    if (!find_flag)                                             //если не найдено рифм
+    }    
+    if (count_rithms(first_ending)==0)         //если не найдено рифм
     {
         cout << "Рифмующихся существительных не обнаружено";
         clean_struct(first_ending);                             //очистка структуры

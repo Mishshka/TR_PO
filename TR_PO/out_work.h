@@ -9,10 +9,16 @@
 #include <Windows.h>
 using namespace std;
 
+struct Prop
+{
+    int number; 
+    Prop* next_prop;
+};
+
 struct Noun     //информация о существительном
 {
     string noun;        //существительное       
-    int prop_number;      //номер предложения
+    Prop* prop_list;      //номер предложения
     int repetitions;      //число повторений
     Noun* next_noun;      //указатель на следующее существительное в группе
 };
@@ -23,6 +29,7 @@ struct Ending   //информация о концовке слова
     string ending;          //концовка
     Noun* first_in_column;  //первое существительное с такой концовкой
     Ending* next_ending;    //указатель на следующую концовка
+    int counter = 0;
 };
 
 string get_ending(const string& transcription);
