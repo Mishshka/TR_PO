@@ -81,7 +81,7 @@ int choose_menu(const vector <string>& arr, int n = 0)
 		if (ch == 27)
 		{
 			after_work_action = 1;
-			return n;
+			return 1;
 		}
 
 	} while (ch != ENT);

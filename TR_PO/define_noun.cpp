@@ -37,7 +37,7 @@ vector <pair<string, int>> define_noun(const vector<pair<string, int>>& sentence
 
 	//запускаем mystem: вход Ч файл, выход Ч файл
 	// ключ -e cp1251 указывает mystem кодировку входа
-	int rc = system("mystem -i -d -e cp1251 tmp_in.txt > tmp_out.txt");
+	int rc = system("libs\\mystem -i -d -e cp1251 tmp_in.txt > tmp_out.txt");
 	if (rc != 0)
 	{
 		remove("tmp_in.txt");

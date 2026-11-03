@@ -159,25 +159,39 @@ void clean_struct(Ending*& first_ending)         //очистка структуры
     }
 }
 
-int factorial(int n)
+long long factorial(long long n)
 {
     if (n == 0)
         return 1;
-    int res = 1;
-    for (int i = 1; i <= n; i++)
+    long long res = 1;
+    for (long long i = 1; i <= n; i++)
         res *= i;
     return res;
 }
 
-int combins(int n, int k) {
-    int combs = factorial(n) / (factorial(k) * factorial(n - k));
-    return combs;
+long long combins(long long n, long long k) {
+    /*int combs = factorial(n) / (factorial(k) * factorial(n - k));
+    return combs;*/
+
+    if (k > n)
+        return 0;
+
+    if (k == 2)
+    {
+        if (n % 2 == 0)
+            return (n / 2) * (n - 1);
+
+        else
+            return n * ((n - 1) / 2);
+    }
+
+    return 0;
 }
 
 
-int count_rithms(Ending* first_ending)
+long long count_rithms(Ending* first_ending)
 {
-    int number_of_rithms = 0;
+    long long number_of_rithms = 0;
     Ending* curr_ending = first_ending;
     while (curr_ending != nullptr)
     {
@@ -189,7 +203,7 @@ int count_rithms(Ending* first_ending)
 
 void print_word(const Noun* noun, ofstream& f, bool first_in_pair)
 {
-    if (first_in_pair)
+    /*if (first_in_pair)
         f << '\n';
     f << "\t" << left << setw(max_l) << noun->noun << " повторений - " << noun->repetitions;
     if (noun->repetitions == 1)
@@ -206,7 +220,30 @@ void print_word(const Noun* noun, ofstream& f, bool first_in_pair)
                 f << ", ";
         }
         f << left << setw(max_r - noun->repetitions) << '\t';
+    }*/
+
+    f << (first_in_pair ? "\tПервое слово: " : "\tВторое слово: ")
+        << noun->noun << '\n';
+    f << "\tКоличество повторений: " << noun->repetitions << '\n';
+    f << "\tНомера предложений: ";
+
+    Prop* curr_prop = noun->prop_list;
+    if (curr_prop == nullptr)
+    {
+        f << "нет данных";
     }
+    else
+    {
+        while (curr_prop != nullptr)
+        {
+            f << curr_prop->number;
+            curr_prop = curr_prop->next_prop;
+            if (curr_prop != nullptr)
+                f << ", ";
+        }
+    }
+
+    f << "\n";
 }
 
 void write_to_file(string inp_name, Ending* first_ending)       //формирование выходного файла
@@ -219,7 +256,9 @@ void write_to_file(string inp_name, Ending* first_ending)       //формирование в
         return;
     }
 
-    out_file << "\n\t" << "Пар рифмующихся существительных: " << count_rithms(first_ending);
+    out_file << "\n\t" << "Пар рифмующихся существительных: " << count_rithms(first_ending)<<endl;
+
+    long long pair_number = 0;
 
     Ending* curr_ending = first_ending;                         //установка текущей концовки
     while (curr_ending != nullptr)                              //цикл по списку концовок
@@ -231,6 +270,8 @@ void write_to_file(string inp_name, Ending* first_ending)       //формирование в
                 Noun* next_noun = curr_noun->next_noun;
                 while (next_noun != nullptr)                          //запись текущего слова в файл в паре с каждым из идущих за ним в списке
                 {
+                    ++pair_number;
+                    out_file << "\n\tПАРА № " << pair_number << "\n";
                     print_word(curr_noun, out_file, true);
                     print_word(next_noun, out_file, false);
                     next_noun = next_noun->next_noun;

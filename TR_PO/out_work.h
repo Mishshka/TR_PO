@@ -48,11 +48,11 @@ void delete_ending(Ending* ending);          //очистка списка концовок
 
 void clean_struct(Ending*& first_ending);         //очистка структуры
 
-int factorial(int n);
+long long factorial(long long n);
 
-int combins(int n, int k);
+long long combins(long long n, long long k);
 
-int count_rithms(Ending* first_ending);
+long long count_rithms(Ending* first_ending);
 
 void write_to_file(string inp_name, Ending* first_ending);       //формирование выходного файла
 

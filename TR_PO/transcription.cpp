@@ -70,8 +70,8 @@ vector <string> get_transcript(const vector<pair<string, int>> & words)
 	
 	outFile.close();
 
-	string exePath = "eSpeak NG\\espeak-ng.exe";
-	string com = "\"\"" + exePath + "\" -v ru --ipa --path=\"eSpeak NG\" -f " + input + " -q > " + output + "\"";
+	string exePath = "libs\\eSpeak NG\\espeak-ng.exe";
+	string com = "\"\"" + exePath + "\" -v ru --ipa --path=\"libs\\eSpeak NG\" -f " + input + " -q > " + output + "\"";
 	system(com.c_str());
 
 	ifstream inFile(output);
