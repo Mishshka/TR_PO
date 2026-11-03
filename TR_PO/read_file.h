@@ -34,7 +34,7 @@ void read_file(string file_name);
 bool is_word_separator(char c);
 
 //функция проверки на "инородные" символы
-bool is_cyrillic(string word);
+bool is_cyrillic(string& word);
 
 //функция определения конца предложения
 bool is_sent_end(char c);

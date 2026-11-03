@@ -34,13 +34,13 @@ bool is_word_separator(char c)
 }
 
 //функция определения являются ли все символы кириллическими
-bool is_cyrillic(string word)
+bool is_cyrillic(string& word)
 {
 	//допускаем использование дефиса, но только не первым  или последним символом 
 	if (word[0] == '-' || word[word.length() - 1] == '-')
 		return false;
 
-	for (char c : word)
+	for (char& c : word)
 	{
 		
 		if (c == '-')
@@ -49,6 +49,9 @@ bool is_cyrillic(string word)
 		//Проверяем входит ли символ в допустимый диапазон
 		if (!(c >= 'А' && c <= 'Я' || c >= 'а' && c <= 'я' || c == 'Ё' || c == 'ё'))
 			return false;
+
+		if (c >= 'а' && c <= 'я') c -= 32;
+		if (c == 'ё') c = 'Ё';
 	}
 
 	return true;

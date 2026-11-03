@@ -256,7 +256,7 @@ void write_to_file(string inp_name, Ending* first_ending)       //формирование в
         return;
     }
 
-    out_file << "\n\t" << "Пар рифмующихся существительных: " << count_rithms(first_ending)<<endl;
+    out_file << "\n\t" << "Пар рифмующихся существительных: " << count_rithms(first_ending)<<"\n\n";
 
     long long pair_number = 0;
 
@@ -277,7 +277,6 @@ void write_to_file(string inp_name, Ending* first_ending)       //формирование в
                     next_noun = next_noun->next_noun;
                 }
                 curr_noun = curr_noun->next_noun;
-                out_file<<endl;
             }
         curr_ending = curr_ending->next_ending;
     }
