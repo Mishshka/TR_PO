@@ -27,56 +27,80 @@ vector <pair<string, int>> define_noun(const vector<pair<string, int>>& sentence
 	ofstream f("tmp_in.txt");
 	for (const auto& p : sentences) 
 	{
-		f.write(p.first.c_str(), p.first.size());
-		f.put('\n');
+		/*f.write(p.first.c_str(), p.first.size());
+		f.put('\n');*/
+		f << "sentence\n";
+		f << p.first << "\n\n";
+
 	}
 	f.close();
 
 	//запускаем mystem: вход Ч файл, выход Ч файл
 	// ключ -e cp1251 указывает mystem кодировку входа
 	int rc = system("mystem -i -d -e cp1251 tmp_in.txt > tmp_out.txt");
-	if (rc != 0) return out;
-	
+	if (rc != 0)
+	{
+		remove("tmp_in.txt");
+		remove("tmp_out.txt");
+		return out;
+	}
+
 	//читаем результат
 	ifstream in("tmp_out.txt");
+
 	string output((istreambuf_iterator<char>(in)), istreambuf_iterator<char>());
-	in.close();
 
 	istringstream stream(output);
 	string line_out;
-	size_t sentence_index = 0;
+	int sentence_index = -1;
 
-	while (getline(stream,line_out) && sentence_index <sentences.size())
+	while (getline(stream,line_out))
 	{
 		if (!line_out.empty() && line_out.back() == '\r') {
 			line_out.pop_back();
 		}
-	
-		int num_sentence = sentences[sentence_index].second;
 
 		//ищем поблочно (через поиск блоков фигурных скобок)
 		size_t pos = 0;
-		while ((pos = line_out.find('{', pos)) != string::npos)
+		while (pos < line_out.size())
 		{
-			size_t end_pos = line_out.find('}', pos);
+			size_t next_sent = line_out.find("sentence", pos);
+			size_t next_block = line_out.find('{', pos);
 
+			// "sentence" встретилось раньше блока (или блока больше нет)
+			if (next_sent != string::npos &&
+				(next_block == string::npos || next_sent < next_block))
+			{
+				sentence_index+=1;                 // +1 за каждое вхождение
+				pos = next_sent + 8;              // длина "sentence"
+				continue;
+			}
+
+			if (next_block == string::npos) break;
+
+			size_t end_pos = line_out.find('}', next_block);
 			if (end_pos == string::npos) break;
 
-			string block = line_out.substr(pos + 1, end_pos - pos - 1);
+			string block = line_out.substr(next_block + 1, end_pos - next_block - 1);
 
 			if (block.find("=S,") != string::npos)
 			{
-				size_t word_start = line_out.rfind('}', pos);
+				size_t word_start = line_out.rfind('}', next_block);
 				word_start = (word_start == string::npos) ? 0 : word_start + 1;
-				string noun = line_out.substr(word_start, pos - word_start);
-				//после передаем в выходной вектор
-				out.push_back(make_pair(noun, num_sentence));
+				string noun = line_out.substr(word_start, next_block - word_start);
+
+				if (sentence_index >= 0 && sentence_index < (int)sentences.size())
+				{
+					int num_sentence = sentences[sentence_index].second;
+					out.push_back(make_pair(noun, num_sentence));
+				}
 			}
-			// —двигаем позицию дл€ поиска следующей пары скобок
+
 			pos = end_pos + 1;
 		}
-		sentence_index++;
 	}
+
+	in.close();
 
 	//убираем временные файлы
 	remove("tmp_in.txt");
