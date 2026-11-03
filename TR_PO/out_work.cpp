@@ -1,5 +1,8 @@
 ﻿#include "out_work.h"
 
+
+int max_l=0;
+int max_r = 0;
 string get_ending(const string& transcription)//получение концовки слова
   
 {
@@ -75,6 +78,8 @@ void put_in_struct(pair<string, int> ex_of_noun, const string& transcription, En
         if (curr_noun != nullptr)                           //если слово уже встречалось
         {
             curr_noun->repetitions++;                       //увеличиваем счётчик повторений
+            if (curr_noun->repetitions > max_r) max_r=curr_noun->repetitions;
+
             Prop* curr_prop = curr_noun->prop_list;
             while (curr_prop->next_prop != nullptr)
                 curr_prop = curr_prop->next_prop;
@@ -96,6 +101,7 @@ void put_in_struct(pair<string, int> ex_of_noun, const string& transcription, En
     curr_noun->prop_list->next_prop = nullptr;
     curr_noun->repetitions = 1;
     curr_noun->noun = noun;
+    if (noun.length() > max_l) max_l = noun.length();
     curr_noun->next_noun = nullptr;
 }
 
@@ -186,12 +192,12 @@ void print_word(const Noun* noun, ofstream& f, bool first_in_pair)
 {
     if (first_in_pair)
         f << '\n';
-    f << "\t" << noun->noun << " повторений - " << noun->repetitions;
+    f << "\t" <<left<<setw(max_l)<< noun->noun << " (повторений - " << noun->repetitions;
     if (noun->repetitions == 1)
-        f << " (в предложении " << noun->prop_list->number << ")\t";
+        f << ", в предложении "<<left << setw(max_r) << noun->prop_list->number << ")\t";
     else
     {
-        f << " (в предложениях ";
+        f << ", в предложениях ";
         Prop* curr_prop = noun->prop_list;
         while (curr_prop != nullptr)
         {
@@ -200,7 +206,7 @@ void print_word(const Noun* noun, ofstream& f, bool first_in_pair)
             if (curr_prop != nullptr)
                 f << ", ";
         }
-        f << ')';
+        f << left << setw(max_r-noun->repetitions) << ')';
     }
 }
 
