@@ -11,6 +11,7 @@
 #include <vector>
 #include "define_noun.h"
 #include "out_work.h"
+#include <thread>
 //--------------------------------
 
 //Используемые пространства имен:
@@ -38,3 +39,6 @@ bool is_cyrillic(string& word);
 
 //функция определения конца предложения
 bool is_sent_end(char c);
+
+//функция записи нумерованного файла
+void out_file(vector <pair<string, long long>>& in, string& out);

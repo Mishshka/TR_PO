@@ -30,7 +30,7 @@ bool find_files()
 	{
 		if (fs::is_regular_file(entry.path()) && entry.path().extension() == ".txt")
 			// Проверяем размер файла, чтобы определить наполненность файла
-			if (fs::file_size(entry.path()) > 0)
+			if (fs::file_size(entry.path()) > 0 && entry.path().filename().string().find("outp_") == string::npos && entry.path().filename().string().find("num_") == string::npos)
 				found_files.push_back(entry.path().filename().string());
 	}
 
@@ -112,10 +112,6 @@ int main()
 		while (after_work_action == 0)
 		{
 			system("cls");
-
-			//Уведомление, что файлы найдены
-			cout << found_mes << endl;
-			ch = _getch();
 
 			//Выбор обрабатываемого файла
 			selected_file = choose_menu(found_files, selected_file);

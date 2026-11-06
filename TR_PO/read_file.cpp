@@ -63,6 +63,39 @@ bool is_sent_end(char c)
 	return (c == '.' || c == '!' || c == ';' || c == '?');
 }
 
+//функция записи нумерованного файла
+void out_file(vector <pair<string, long long>>& in, string& out)
+{
+
+	int i = 0;
+	bool fl = true;
+	string filename = "num_" + out;
+	while (fl)
+	{
+		if (i > 0) filename = "num_" + out.substr(0, out.length() - 4) + "(" + to_string(i) + ")" + ".txt";
+
+		FILE* file = nullptr;
+		errno_t err = fopen_s(&file, filename.c_str(), "wx");
+
+		if (file != nullptr && err==0)
+		{
+			out = filename;
+			fclose(file);
+			fl = false;
+		}
+		i++;
+	}
+
+	ofstream file(out);
+	if (file.is_open())
+	{
+		for (auto elm : in)
+			file << "[" << elm.second << "] " << elm.first << endl;
+
+		file.close();
+	}
+}
+
 //функция начала работы
 //получает имя выбранного файла
 void read_file(string file_name)
@@ -86,11 +119,11 @@ void read_file(string file_name)
 	//переменная сформированного предложения
 	string sentence;
 	//счетчик текущего номера предложения
-	int num_sentence = 1;
+	long long num_sentence = 1;
 	//считываемый символ
 	char c;
 
-	vector <pair<string, int>> in;
+	vector <pair<string, long long>> in;
 
 	while (file.get(c))
 	{
@@ -150,8 +183,13 @@ void read_file(string file_name)
 
 	file.close();
 	
+	//имя нумерованного файла
+	string out=file_name;
+	//запускаем параллельно
+	thread t(out_file , ref(in), ref(out));
+
 	//выходной вектор из пар слово - номер предложения 
-	vector <pair<string, int>> noun_sentence = define_noun(in);
+	vector <pair<string, long long>> noun_sentence = define_noun(in);
 	
 	
 	//получаем транскрипции
@@ -160,4 +198,9 @@ void read_file(string file_name)
 	find_rithms(noun_sentence, transcriptions, file_name);
 	//find_rithms(noun_sentence, file_name);
 
+	if (t.joinable())
+	{
+		t.join();
+		cout << "\n\nФайл \"" << out << "\" содержит пронумерованные предложения из файла \"" << file_name << "\"." << endl;
+	}
 }

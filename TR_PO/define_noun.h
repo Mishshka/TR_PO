@@ -22,4 +22,4 @@ using namespace std;
 //Используемые функции:
 
 //функция для начала работы и определения части речи 
-vector <pair<string, int>> define_noun(const vector<pair<string, int>>& sentences);
+vector <pair<string, long long>> define_noun(const vector<pair<string, long long>>& sentences);

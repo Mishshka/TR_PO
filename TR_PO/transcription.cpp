@@ -41,7 +41,7 @@ string cp1251_to_utf8(const string& str1251)
 // функция получения транскрипции (!!!!!в UTF-8)
 //возвращает вектор транскрипций
 //возвращает вектор транскрипций
-vector <string> get_transcript(const vector<pair<string, int>> & words)
+vector <string> get_transcript(const vector<pair<string, long long>> & words)
 //string get_transcript(string word)
 {
 	//работаем по следующему принципу:

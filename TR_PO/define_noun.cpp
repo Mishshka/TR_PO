@@ -18,10 +18,10 @@
 
 //функция начала обработки
 //получает предложение и его номер
-vector <pair<string, int>> define_noun(const vector<pair<string, int>>& sentences)
+vector <pair<string, long long>> define_noun(const vector<pair<string, long long>>& sentences)
 {
 	//выходной вектор
-	vector<pair<string, int>> out;
+	vector<pair<string, long long>> out;
 
 	//записываем полученное предложение в временный файл (для mystem)
 	ofstream f("tmp_in.txt");
@@ -52,7 +52,7 @@ vector <pair<string, int>> define_noun(const vector<pair<string, int>>& sentence
 
 	istringstream stream(output);
 	string line_out;
-	int sentence_index = -1;
+	long long sentence_index = -1;
 
 	while (getline(stream,line_out))
 	{

@@ -1,7 +1,9 @@
 #include "out_work.h"
 
-int max_l = 0;
-int max_r = 0;
+
+long long max_l = 0;
+long long max_r = 0;
+
 string get_ending(const string& transcription)//получение концовки слова
 
 {
@@ -13,10 +15,10 @@ string get_ending(const string& transcription)//получение концовки слова
 }
 
 
-void put_in_struct(pair<string, int> ex_of_noun, const string& transcription, Ending*& first_ending) //помещение существительного в структуру
+void put_in_struct(pair<string, long long> ex_of_noun, const string& transcription, Ending*& first_ending) //помещение существительного в структуру
 {
     string noun = ex_of_noun.first;
-    int prop_number = ex_of_noun.second;
+    long long prop_number = ex_of_noun.second;
     string ending = get_ending(transcription); //получение концовки
 
 
@@ -104,10 +106,10 @@ void put_in_struct(pair<string, int> ex_of_noun, const string& transcription, En
     curr_noun->next_noun = nullptr;
 }
 
-void sort_nouns(const vector<pair<string, int>>& nouns, const vector<string>& transcriptions, Ending*& first_ending)
+void sort_nouns(const vector<pair<string, long long>>& nouns, const vector<string>& transcriptions, Ending*& first_ending)
 //void sort_nouns(const vector<pair<string, int>>& nouns, Ending*& first_ending, bool& find_flag)
 {
-    for (int i = 0; i < nouns.size(); i++)
+    for (long long i = 0; i < nouns.size(); i++)
     {
         put_in_struct(nouns[i], transcriptions[i], first_ending);
         //put_in_struct(nouns[i], first_ending, find_flag);
@@ -281,11 +283,11 @@ void write_to_file(string inp_name, Ending* first_ending)       //формирование в
         curr_ending = curr_ending->next_ending;
     }
     out_file.close();
-    cout << "Данные сохранены в файл " << outp_name;
+    cout << "\nДанные сохранены в файл " << outp_name;
     return;
 }
 
-void find_rithms(vector<pair<string, int>>& nouns, vector<string>& transcriptions, string& inp_name)
+void find_rithms(vector<pair<string, long long>>& nouns, vector<string>& transcriptions, string& inp_name)
 //void find_rithms(vector<pair<string, int>> nouns, string inp_name)
 {
     Ending* first_ending = nullptr;     //указатель на начало структуры
