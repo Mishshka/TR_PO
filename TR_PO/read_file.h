@@ -12,6 +12,8 @@
 #include "define_noun.h"
 #include "out_work.h"
 #include <thread>
+
+#include <chrono>
 //--------------------------------
 
 //Используемые пространства имен:

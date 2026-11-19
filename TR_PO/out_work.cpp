@@ -295,7 +295,13 @@ void find_rithms(vector<pair<string, long long>>& nouns, vector<string>& transcr
 {
     Ending* first_ending = nullptr;
 
+    //точка начала формирования структуры
+    auto t1 = chrono::steady_clock::now();
+
     sort_nouns(nouns, transcriptions, first_ending);
+
+    //точка окончания структурирования
+    auto t2 = chrono::steady_clock::now();
 
     if (first_ending == nullptr)
     {
@@ -308,7 +314,23 @@ void find_rithms(vector<pair<string, long long>>& nouns, vector<string>& transcr
         clean_struct(first_ending);
         return;
     }
+
+    //точка начала записи файла
+    auto t3 = chrono::steady_clock::now();
+
     write_to_file(inp_name, first_ending);
+
+    //точка окончания записи
+    auto t4 = chrono::steady_clock::now();
+
     clean_struct(first_ending);
+
+    //точка окончания чистки
+    auto t5 = chrono::steady_clock::now();
+
+    cout << "\n\nВремя структурирования: " << chrono::duration_cast<chrono::milliseconds>(t2 - t1) << endl;
+    cout << "Время  записи файла: " << chrono::duration_cast<chrono::milliseconds>(t4 - t3) << endl;
+    cout << "Время очистки: " << chrono::duration_cast<chrono::milliseconds>(t5 - t4) << endl << endl;
+
     return;
 }

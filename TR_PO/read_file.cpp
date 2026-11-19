@@ -29,7 +29,7 @@ bool is_word_separator(char c)
 		|| c == '+' || c == '=' || c == '_' || c == '{' || c == '}' || c == '%' || c == '@'
 		|| c == '#' || c == '№' || c == '$' || c == '^' || c == '&' || c == '*' || c == '~' || c == '`')
 		return true;
-	
+
 	return false;
 }
 
@@ -42,10 +42,10 @@ bool is_cyrillic(string& word)
 
 	for (char& c : word)
 	{
-		
+
 		if (c == '-')
 			continue;
-		
+
 		//Проверяем входит ли символ в допустимый диапазон
 		if (!(c >= 'А' && c <= 'Я' || c >= 'а' && c <= 'я' || c == 'Ё' || c == 'ё'))
 			return false;
@@ -77,7 +77,7 @@ void out_file(vector <pair<string, long long>>& in, string& out)
 		FILE* file = nullptr;
 		errno_t err = fopen_s(&file, filename.c_str(), "wx");
 
-		if (file != nullptr && err==0)
+		if (file != nullptr && err == 0)
 		{
 			out = filename;
 			fclose(file);
@@ -125,6 +125,9 @@ void read_file(string file_name)
 
 	vector <pair<string, long long>> in;
 
+	//точка начала чтения файла
+	auto t1 = chrono::steady_clock::now();
+
 	while (file.get(c))
 	{
 		if (is_word_separator(c))
@@ -171,32 +174,44 @@ void read_file(string file_name)
 			sentence += word;
 		}
 	}
-	
+
 	word.clear();
+
+
 
 	if (!sentence.empty())
 	{
-		//получение существительных из предложения
+		//получение предложений
 		in.push_back(make_pair(sentence, num_sentence));
 		sentence.clear();
 	}
 
-	file.close();
-	
-	//имя нумерованного файла
-	string out=file_name;
-	//запускаем параллельно
-	thread t(out_file , ref(in), ref(out));
 
+	file.close();
+
+	//имя нумерованного файла
+	string out = file_name;
+	//запускаем параллельно
+	thread t(out_file, ref(in), ref(out));
+	//точка окончания чтения файла и начала получения списка существительных
+	auto t2 = chrono::steady_clock::now();
 	//выходной вектор из пар слово - номер предложения 
 	vector <pair<string, long long>> noun_sentence = define_noun(in);
-	
-	
+	//точка окончания получения списка существительных и начало транскрипций
+	auto t3 = chrono::steady_clock::now();
+
 	//получаем транскрипции
 	vector<string> transcriptions = get_transcript(noun_sentence);
+
+	//точка окончания получения списка транскрипций
+	auto t4 = chrono::steady_clock::now();
 	//формируем выходной файл
 	find_rithms(noun_sentence, transcriptions, file_name);
 	//find_rithms(noun_sentence, file_name);
+
+	cout << "Время чтения файла: " << chrono::duration_cast<chrono::milliseconds>(t2 - t1) << endl;
+	cout << "Время  получения существительных: " << chrono::duration_cast<chrono::milliseconds>(t3 - t2) << endl;
+	cout << "Время получения транскрипций: " << chrono::duration_cast<chrono::milliseconds>(t4 - t3) << endl << endl;
 
 	if (t.joinable())
 	{
